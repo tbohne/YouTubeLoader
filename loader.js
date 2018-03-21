@@ -13,7 +13,8 @@ function init_url() {
                     console.log(xmlhttp.responseText);
                 }
             }
-            xmlhttp.open("GET", url_input.value, true);
+            var url = "https://crossorigin.me/" + url_input.value;
+            xmlhttp.open("GET", url, true);
             xmlhttp.send();
         }
     });
