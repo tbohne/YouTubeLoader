@@ -1,3 +1,9 @@
+function extract_title(http_response) {
+    var str = "\"title\":\"";
+    var start_idx = http_response.search(str) + str.length;
+    var end_idx = http_response.indexOf("\",", start_idx);
+    return http_response.substring(start_idx, end_idx);
+};
 
 function init_url() {
 
@@ -9,8 +15,10 @@ function init_url() {
 
             xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange=function() {
-                if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-                    console.log(xmlhttp.responseText);
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    var http_response = xmlhttp.responseText;
+                    var title = extract_title(http_response);
+                    console.log(title);
                 }
             }
             var url = "https://crossorigin.me/" + url_input.value;
