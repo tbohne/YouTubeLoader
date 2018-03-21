@@ -18,27 +18,24 @@ function encode_utf8(s) {
 };
 
 function extract_url(http_response) {
-
     var str = "\"url_encoded_fmt_stream_map\":";
-
     var start_idx = http_response.search(str) + str.length + 1;
     var url_start_idx = http_response.indexOf("http", start_idx);
-
     var append_to_url = "";
     var url_meta_length = 4;
 
     if (start_idx != url_start_idx - url_meta_length) {
         append_to_url += "&";
-        append_to_url += http_response.substring(start_idx, url_start_idx - start_idx);
+        append_to_url += http_response.substring(start_idx, url_start_idx);
     }
     var end_idx = http_response.indexOf(",", url_start_idx);
     var url = http_response.substring(url_start_idx, end_idx);
+
     url += append_to_url;
     url = encode_utf8(url);
     url = remove_itag_params(url);
 
     return url;
-
 };
 
 function init_url() {
@@ -55,17 +52,13 @@ function init_url() {
 
                     var http_response = xmlhttp.responseText;
                     var title = extract_title(http_response);
-                    console.log(title);
+                    console.log("TITLE: " + title);
                     var url = extract_url(http_response);
-                    // console.log(url);
 
-                    // var uri_encoded_title = encodeURI(title);
-                    // console.log(uri_encoded_title);
-                    // var uri_decoded_url = decodeURI(url);
-                    // console.log(uri_decoded_url);
+                    var uri_encoded_title = encodeURI(title);
+                    var uri_decoded_url = decodeURIComponent(url);
 
-                    // var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
-
+                    var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
                 }
             }
             var url = "https://crossorigin.me/" + url_input.value;
