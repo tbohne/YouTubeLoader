@@ -7,7 +7,9 @@ function extract_title(http_response) {
 
 function remove_itag_params(url) {
     var itag_idx = url.search("itag=");
-    var substring = url.substring(itag_idx, "&");
+    var end_idx = url.indexOf(itag_idx, "&");
+    var substring = url.substring(itag_idx, end_idx);
+    url = url.replace(substring, "");
     return substring;
 };
 
@@ -34,6 +36,9 @@ function extract_url(http_response) {
     url += append_to_url;
     url = encode_utf8(url);
     url = remove_itag_params(url);
+
+    return url;
+
 };
 
 function init_url() {
@@ -47,10 +52,20 @@ function init_url() {
             xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+
                     var http_response = xmlhttp.responseText;
                     var title = extract_title(http_response);
                     console.log(title);
-                    extract_url(http_response);
+                    var url = extract_url(http_response);
+                    // console.log(url);
+
+                    // var uri_encoded_title = encodeURI(title);
+                    // console.log(uri_encoded_title);
+                    // var uri_decoded_url = decodeURI(url);
+                    // console.log(uri_decoded_url);
+
+                    // var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
+
                 }
             }
             var url = "https://crossorigin.me/" + url_input.value;
