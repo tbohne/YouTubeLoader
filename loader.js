@@ -38,20 +38,10 @@ function extract_url(http_response) {
     return url;
 };
 
-function download_video(url, dirty_hack_prefix) {
-    url = dirty_hack_prefix + url;
-    var request = new XMLHttpRequest();
-    request.open("GET", url);
-    request.responseType = "blob";
-    request.onload = function() {
-        var a = document.createElement("a");
-        a.href = URL.createObjectURL(this.response);
-        a.download = this.response.name;
-        console.log(this.response.responseText);
-        document.body.appendChild(a);
-        a.click();
-    }
-    request.send();
+function provide_download_url(url) {
+    var download_url = document.getElementById("download_url");
+    download_url.href = url;
+    download_url.style = "";
 };
 
 function init_url() {
@@ -76,7 +66,7 @@ function init_url() {
                     var uri_encoded_title = encodeURI(title);
                     var uri_decoded_url = decodeURIComponent(url);
                     var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
-                    download_video(url_to_download_from, dirty_hack_prefix);
+                    provide_download_url(url_to_download_from);
                 }
             }
             var url = dirty_hack_prefix + url_input.value;
