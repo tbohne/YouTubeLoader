@@ -38,7 +38,25 @@ function extract_url(http_response) {
     return url;
 };
 
+function download_video(url, dirty_hack_prefix) {
+    url = dirty_hack_prefix + url;
+    var request = new XMLHttpRequest();
+    request.open("GET", url);
+    request.responseType = "blob";
+    request.onload = function() {
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(this.response);
+        a.download = this.response.name;
+        console.log(this.response.responseText);
+        document.body.appendChild(a);
+        a.click();
+    }
+    request.send();
+};
+
 function init_url() {
+
+    var dirty_hack_prefix = "https://crossorigin.me/";
 
     var url_input = document.getElementById("url_input");
 
@@ -57,11 +75,11 @@ function init_url() {
 
                     var uri_encoded_title = encodeURI(title);
                     var uri_decoded_url = decodeURIComponent(url);
-
                     var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
+                    download_video(url_to_download_from, dirty_hack_prefix);
                 }
             }
-            var url = "https://crossorigin.me/" + url_input.value;
+            var url = dirty_hack_prefix + url_input.value;
             xmlhttp.open("GET", url, true);
             xmlhttp.send();
         }
