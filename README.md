@@ -1,13 +1,7 @@
 YouTubeLoader
 =====================================================
-Simple web application to download videos from YouTube.
-
-### DEPENDENCIES
-- **serve-static** --> npm install serve-static
-- **connect** --> npm install connect
+Simple web application that allows you to download videos from YouTube.
 
 ### USAGE
-```
-$ node server.js
-```
-Navigate to localhost:8080 to use the app.
+Open the index.html in your browser and paste the URL to the video you'd like
+to get a download link for. Click the emerging button and save the .mp4 file.
