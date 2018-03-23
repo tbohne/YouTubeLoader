@@ -41,13 +41,16 @@ function extract_url(http_response) {
 function provide_download_url(url) {
     var download_url = document.getElementById("download_url");
     download_url.href = url;
+    url = encode_utf8(url);
+    var idx = url.indexOf("\\u");
+    url = url.substring(0, idx);
+    console.log(url);
     download_url.style = "";
 };
 
 function init_url() {
 
     var dirty_hack_prefix = "https://crossorigin.me/";
-
     var url_input = document.getElementById("url_input");
 
     url_input.addEventListener("keyup", function(event) {
@@ -65,6 +68,13 @@ function init_url() {
 
                     var uri_encoded_title = encodeURI(title);
                     var uri_decoded_url = decodeURIComponent(url);
+
+                    if (!uri_decoded_url.includes("http")) {
+                        var url = dirty_hack_prefix + url_input.value;
+                        xmlhttp.open("GET", url, true);
+                        xmlhttp.send();
+                    }
+
                     var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
                     provide_download_url(url_to_download_from);
                 }
