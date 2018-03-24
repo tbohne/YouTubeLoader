@@ -38,59 +38,58 @@ function extract_url(http_response) {
     return url;
 };
 
-function provide_download_url(url, xmlhttp, dirty_hack_prefix) {
+function send_request(dirty_hack_prefix, input_url, http_request) {
+    var url = dirty_hack_prefix + input_url.value;
+    http_request.open("GET", url, true);
+    http_request.send();
+};
+
+function provide_download_url(url, http_request, dirty_hack_prefix, input_url) {
     url = encode_utf8(url);
-    var tmp = url;
+    var tmp_url = url;
     var idx = url.indexOf("\\u");
     url = url.substring(0, idx);
 
-    if (url == "") {
+    if (!url) {
         var download_url = document.getElementById("download_url");
-        download_url.href = tmp;
+        download_url.href = tmp_url;
         download_url.style = "";
     } else {
-        var url = dirty_hack_prefix + url_input.value;
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
+        send_request(dirty_hack_prefix, input_url, http_request);
     }
 };
 
-function init_url() {
+function wait_for_url() {
 
     var dirty_hack_prefix = "https://crossorigin.me/";
-    var url_input = document.getElementById("url_input");
+    var input_url = document.getElementById("input_url");
 
-    url_input.addEventListener("keyup", function(event) {
+    input_url.addEventListener("keyup", function(event) {
         event.preventDefault();
         if (event.keyCode === 13) {
-
-            xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    var http_response = xmlhttp.responseText;
+            http_request = new XMLHttpRequest();
+            http_request.onreadystatechange = function() {
+                if (http_request.readyState === 4 && http_request.status === 200) {
+                    var http_response = http_request.responseText;
                     var title = extract_title(http_response);
-                    console.log("TITLE: " + title);
                     var url = extract_url(http_response);
-
                     var uri_encoded_title = encodeURI(title);
                     var uri_decoded_url = decodeURIComponent(url);
 
                     if (!uri_decoded_url.includes("http")) {
-                        var url = dirty_hack_prefix + url_input.value;
-                        xmlhttp.open("GET", url, true);
-                        xmlhttp.send();
+                        send_request(dirty_hack_prefix, input_url, http_request);
                     }
                     var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
-                    provide_download_url(url_to_download_from, xmlhttp, dirty_hack_prefix);
+                    provide_download_url(
+                        url_to_download_from, http_request, dirty_hack_prefix, input_url
+                    );
                 }
             }
-            var url = dirty_hack_prefix + url_input.value;
-            xmlhttp.open("GET", url, true);
-            xmlhttp.send();
+            send_request(dirty_hack_prefix, input_url, http_request);
         }
     });
 };
 
 window.addEventListener("DOMContentLoaded", function() {
-    init_url();
+    wait_for_url();
 }, false);
