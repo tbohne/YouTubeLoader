@@ -38,14 +38,21 @@ function extract_url(http_response) {
     return url;
 };
 
-function provide_download_url(url) {
-    var download_url = document.getElementById("download_url");
-    download_url.href = url;
+function provide_download_url(url, xmlhttp, dirty_hack_prefix) {
     url = encode_utf8(url);
+    var tmp = url;
     var idx = url.indexOf("\\u");
     url = url.substring(0, idx);
-    console.log(url);
-    download_url.style = "";
+
+    if (url == "") {
+        var download_url = document.getElementById("download_url");
+        download_url.href = tmp;
+        download_url.style = "";
+    } else {
+        var url = dirty_hack_prefix + url_input.value;
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
 };
 
 function init_url() {
@@ -60,7 +67,6 @@ function init_url() {
             xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-
                     var http_response = xmlhttp.responseText;
                     var title = extract_title(http_response);
                     console.log("TITLE: " + title);
@@ -74,9 +80,8 @@ function init_url() {
                         xmlhttp.open("GET", url, true);
                         xmlhttp.send();
                     }
-
                     var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
-                    provide_download_url(url_to_download_from);
+                    provide_download_url(url_to_download_from, xmlhttp, dirty_hack_prefix);
                 }
             }
             var url = dirty_hack_prefix + url_input.value;
