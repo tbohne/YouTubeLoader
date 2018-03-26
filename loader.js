@@ -52,9 +52,15 @@ function provide_download_url(url, http_request, dirty_hack_prefix, input_url) {
     url = url.substring(0, idx);
 
     if (!url) {
-        var download_url = document.getElementById("download_url");
-        download_url.href = tmp_url;
-        download_url.style = "";
+        if (!tmp_url.includes("signature")) {
+            console.log("sig req - unable to dl");
+            var error_msg = document.getElementById("error_msg");
+            error_msg.style = "";
+        } else {
+            var download_url = document.getElementById("download_url");
+            download_url.href = tmp_url;
+            download_url.style = "";
+        }
         set_waiting_symbol(true);
     } else {
         send_request(dirty_hack_prefix, input_url, http_request);
@@ -81,6 +87,9 @@ function wait_for_url() {
 
         if (event.keyCode === 13) {
 
+            var error_msg = document.getElementById("error_msg");
+            error_msg.style = "display: none";
+
             ajax_request = new XMLHttpRequest();
 
             ajax_request.addEventListener("load", function() {
@@ -88,6 +97,7 @@ function wait_for_url() {
                 var http_response = ajax_request.responseText;
                 var title = extract_title(http_response);
                 var url = extract_url(http_response);
+
                 var uri_encoded_title = encodeURI(title);
                 var uri_decoded_url = decodeURIComponent(url);
 
