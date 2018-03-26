@@ -66,26 +66,30 @@ function wait_for_url() {
 
     input_url.addEventListener("keyup", function(event) {
         event.preventDefault();
-        if (event.keyCode === 13) {
-            http_request = new XMLHttpRequest();
-            http_request.onreadystatechange = function() {
-                if (http_request.readyState === 4 && http_request.status === 200) {
-                    var http_response = http_request.responseText;
-                    var title = extract_title(http_response);
-                    var url = extract_url(http_response);
-                    var uri_encoded_title = encodeURI(title);
-                    var uri_decoded_url = decodeURIComponent(url);
 
-                    if (!uri_decoded_url.includes("http")) {
-                        send_request(dirty_hack_prefix, input_url, http_request);
-                    }
-                    var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
-                    provide_download_url(
-                        url_to_download_from, http_request, dirty_hack_prefix, input_url
-                    );
+        if (event.keyCode === 13) {
+
+            ajax_request = new XMLHttpRequest();
+
+            ajax_request.addEventListener("load", function() {
+
+                var http_response = ajax_request.responseText;
+                var title = extract_title(http_response);
+                var url = extract_url(http_response);
+                var uri_encoded_title = encodeURI(title);
+                var uri_decoded_url = decodeURIComponent(url);
+
+                if (!uri_decoded_url.includes("http")) {
+                    send_request(dirty_hack_prefix, input_url, ajax_request);
                 }
-            }
-            send_request(dirty_hack_prefix, input_url, http_request);
+                var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
+                provide_download_url(
+                    url_to_download_from, ajax_request, dirty_hack_prefix, input_url
+                );
+
+            });
+
+            send_request(dirty_hack_prefix, input_url, ajax_request);
         }
     });
 };
