@@ -72,7 +72,7 @@ function set_waiting_symbol(ready) {
 
 function wait_for_url() {
 
-    var dirty_hack_prefix = "https://crossorigin.me/";
+    var dirty_hack_prefix = "https://cors-anywhere.herokuapp.com/";
     var input_url = document.getElementById("input_url");
 
     input_url.addEventListener("keyup", function(event) {
