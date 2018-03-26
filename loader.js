@@ -39,6 +39,7 @@ function extract_url(http_response) {
 };
 
 function send_request(dirty_hack_prefix, input_url, http_request) {
+    set_waiting_symbol(false);
     var url = dirty_hack_prefix + input_url.value;
     http_request.open("GET", url, true);
     http_request.send();
@@ -54,10 +55,20 @@ function provide_download_url(url, http_request, dirty_hack_prefix, input_url) {
         var download_url = document.getElementById("download_url");
         download_url.href = tmp_url;
         download_url.style = "";
+        set_waiting_symbol(true);
     } else {
         send_request(dirty_hack_prefix, input_url, http_request);
     }
 };
+
+function set_waiting_symbol(ready) {
+    var waiting_symbol_div = document.getElementById('waiting_symbol');
+    if (ready) {
+        waiting_symbol_div.style.display = "none";
+    } else {
+        waiting_symbol_div.style.display = "";
+    }
+}
 
 function wait_for_url() {
 
@@ -65,6 +76,7 @@ function wait_for_url() {
     var input_url = document.getElementById("input_url");
 
     input_url.addEventListener("keyup", function(event) {
+
         event.preventDefault();
 
         if (event.keyCode === 13) {
@@ -86,9 +98,7 @@ function wait_for_url() {
                 provide_download_url(
                     url_to_download_from, ajax_request, dirty_hack_prefix, input_url
                 );
-
             });
-
             send_request(dirty_hack_prefix, input_url, ajax_request);
         }
     });
