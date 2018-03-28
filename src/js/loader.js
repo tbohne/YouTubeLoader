@@ -65,10 +65,11 @@ function hide_waiting_symbol() {
     waiting_symbol.style.display = "none";
 };
 
-function activate_download_button(url) {
+function activate_download_button(url, title) {
     var download_button = document.getElementById("download_button");
     download_button.href = url;
     download_button.style = "";
+    download_button.download = title.toString() + ".mp4";
 };
 
 function deactivate_download_button() {
@@ -77,7 +78,7 @@ function deactivate_download_button() {
     download_button.style = "display: none";
 };
 
-function provide_download_url(url, http_request, dirty_hack_prefix, input_url) {
+function provide_download_url(url, http_request, dirty_hack_prefix, input_url, title) {
     url = encode_utf8(url);
     var tmp_url = url;
     var idx = url.indexOf("\\u");
@@ -88,7 +89,7 @@ function provide_download_url(url, http_request, dirty_hack_prefix, input_url) {
             console.log("sig req - unable to dl");
             show_err_msg();
         } else {
-            activate_download_button(tmp_url);
+            activate_download_button(tmp_url, title);
         }
         hide_waiting_symbol();
     } else {
@@ -112,7 +113,7 @@ function handle_ajax_response(ajax_response, dirty_hack_prefix) {
         send_request(dirty_hack_prefix, input_url, ajax_request);
     }
     var url_to_download_from = decoded_url + "title=" + uri_encoded_title;
-    provide_download_url(url_to_download_from, ajax_request, dirty_hack_prefix, input_url);
+    provide_download_url(url_to_download_from, ajax_request, dirty_hack_prefix, input_url, title);
 };
 
 function wait_for_url() {
