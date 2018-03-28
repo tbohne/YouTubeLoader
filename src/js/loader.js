@@ -101,6 +101,20 @@ function restore_initial_state() {
     deactivate_download_button();
 };
 
+function handle_ajax_response(ajax_response, dirty_hack_prefix) {
+    var title = extract_title(ajax_response);
+    var url = extract_url(ajax_response);
+    var uri_encoded_title = encodeURI(title);
+    var decoded_url = decodeURIComponent(url);
+
+    if (!decoded_url.includes("http")) {
+        // broken url - send again
+        send_request(dirty_hack_prefix, input_url, ajax_request);
+    }
+    var url_to_download_from = decoded_url + "title=" + uri_encoded_title;
+    provide_download_url(url_to_download_from, ajax_request, dirty_hack_prefix, input_url);
+};
+
 function wait_for_url() {
     var dirty_hack_prefix = "https://cors-anywhere.herokuapp.com/";
     var input_url = document.getElementById("input_url");
@@ -114,20 +128,9 @@ function wait_for_url() {
             ajax_request = new XMLHttpRequest();
 
             ajax_request.addEventListener("load", function() {
-                var http_response = ajax_request.responseText;
-                var title = extract_title(http_response);
-                var url = extract_url(http_response);
-                var uri_encoded_title = encodeURI(title);
-                var uri_decoded_url = decodeURIComponent(url);
-
-                if (!uri_decoded_url.includes("http")) {
-                    send_request(dirty_hack_prefix, input_url, ajax_request);
-                }
-                var url_to_download_from = uri_decoded_url + "title=" + uri_encoded_title;
-                provide_download_url(
-                    url_to_download_from, ajax_request, dirty_hack_prefix, input_url
-                );
+                handle_ajax_response(ajax_request.responseText, dirty_hack_prefix);
             });
+
             send_request(dirty_hack_prefix, input_url, ajax_request);
         }
     });
