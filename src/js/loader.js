@@ -39,10 +39,42 @@ function extract_url(http_response) {
 };
 
 function send_request(dirty_hack_prefix, input_url, http_request) {
-    set_waiting_symbol(false);
+    show_waiting_symbol();
     var url = dirty_hack_prefix + input_url.value;
     http_request.open("GET", url, true);
     http_request.send();
+};
+
+function show_err_msg() {
+    var error_msg = document.getElementById("error_msg");
+    error_msg.style.display = "block";
+};
+
+function hide_err_msg() {
+    var error_msg = document.getElementById("error_msg");
+    error_msg.style.display = "none";
+};
+
+function show_waiting_symbol() {
+    var waiting_symbol = document.getElementById("waiting_symbol");
+    waiting_symbol.style.display = "block";
+};
+
+function hide_waiting_symbol() {
+    var waiting_symbol = document.getElementById("waiting_symbol");
+    waiting_symbol.style.display = "none";
+};
+
+function activate_download_button(url) {
+    var download_button = document.getElementById("download_button");
+    download_button.href = url;
+    download_button.style = "";
+};
+
+function deactivate_download_button() {
+    var download_button = document.getElementById("download_button");
+    download_button.href = "";
+    download_button.style = "display: none";
 };
 
 function provide_download_url(url, http_request, dirty_hack_prefix, input_url) {
@@ -54,30 +86,22 @@ function provide_download_url(url, http_request, dirty_hack_prefix, input_url) {
     if (!url) {
         if (!tmp_url.includes("signature")) {
             console.log("sig req - unable to dl");
-            var error_msg = document.getElementById("error_msg");
-            error_msg.style = "";
+            show_err_msg();
         } else {
-            var download_url = document.getElementById("download_url");
-            download_url.href = tmp_url;
-            download_url.style = "";
+            activate_download_button(tmp_url);
         }
-        set_waiting_symbol(true);
+        hide_waiting_symbol();
     } else {
         send_request(dirty_hack_prefix, input_url, http_request);
     }
 };
 
-function set_waiting_symbol(ready) {
-    var waiting_symbol_div = document.getElementById('waiting_symbol');
-    if (ready) {
-        waiting_symbol_div.style.display = "none";
-    } else {
-        waiting_symbol_div.style.display = "";
-    }
-}
+function restore_initial_state() {
+    hide_err_msg();
+    deactivate_download_button();
+};
 
 function wait_for_url() {
-
     var dirty_hack_prefix = "https://cors-anywhere.herokuapp.com/";
     var input_url = document.getElementById("input_url");
 
@@ -86,18 +110,13 @@ function wait_for_url() {
         event.preventDefault();
 
         if (event.keyCode === 13) {
-
-            var error_msg = document.getElementById("error_msg");
-            error_msg.style = "display: none";
-
+            restore_initial_state();
             ajax_request = new XMLHttpRequest();
 
             ajax_request.addEventListener("load", function() {
-
                 var http_response = ajax_request.responseText;
                 var title = extract_title(http_response);
                 var url = extract_url(http_response);
-
                 var uri_encoded_title = encodeURI(title);
                 var uri_decoded_url = decodeURIComponent(url);
 
