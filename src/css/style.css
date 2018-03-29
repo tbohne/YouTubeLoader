@@ -1,7 +1,25 @@
 h1 {
     font-size: 500%;
+    font-family: 'Cinzel', serif;
+    color: #F5F5DC;
+}
+
+label {
+    font-family: 'Cinzel', serif;
+    display: block;
+    color: #F5F5DC;
+}
+
+p, a {
+    color: #F5F5DC;
+    font-family: 'Cinzel', serif;
 }
 
 body {
+    background-color: #1b1b1b;
     text-align: center;
+}
+
+.waiting_div, .button {
+    padding: 50px;
 }
