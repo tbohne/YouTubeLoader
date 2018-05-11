@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/tbohne/YouTubeLoader#readme",
   "dependencies": {
-    "express": "^4.16.3"
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "requestify": "^0.2.5"
   }
 }

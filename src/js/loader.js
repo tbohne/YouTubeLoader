@@ -86,7 +86,7 @@ function provide_download_url(url, http_request, dirty_hack_prefix, input_url, t
 
     if (!url) {
         if (!tmp_url.includes("signature")) {
-            console.log("sig req - unable to dl");
+            // console.log("sig req - unable to dl");
             show_err_msg();
         } else {
             activate_download_button(tmp_url, title);
@@ -125,14 +125,20 @@ function wait_for_url() {
         event.preventDefault();
 
         if (event.keyCode === 13) {
+
             restore_initial_state();
-            ajax_request = new XMLHttpRequest();
+            var submit_form = document.getElementById("submit_form");
+            submit_form.submit();
 
-            ajax_request.addEventListener("load", function() {
-                handle_ajax_response(ajax_request.responseText, dirty_hack_prefix);
-            });
+            show_waiting_symbol();
 
-            send_request(dirty_hack_prefix, input_url, ajax_request);
+            // ajax_request = new XMLHttpRequest();
+
+            // ajax_request.addEventListener("load", function() {
+            //     handle_ajax_response(ajax_request.responseText, dirty_hack_prefix);
+            // });
+
+            // send_request(dirty_hack_prefix, input_url, ajax_request);
         }
     });
 };

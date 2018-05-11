@@ -21,7 +21,12 @@
         <div class="pure-u-1">
             <h1>YouTubeLoader</h1>
             <label for="input_url">Enter URL:</label>
-            <input class="pure-input" type="text" placeholder="https://www.youtube.com/..." id="input_url">
+
+            <form method="post" action="/">
+                <input id="input_url" name="url" class="pure-input" type="text" placeholder="https://www.youtube.com/...">
+                <input id="submit_form" type="submit" style="display: none;">
+            </form>
+
             <div class="waiting_div" id="waiting_symbol" style="display: none">
                 <img width="150" height="150" src='loading.gif'>
             </div>
